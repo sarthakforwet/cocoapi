@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   python: circleci/python@0.2.1
+  win: circleci/windows@2.2.0
 
 jobs:
   build-from-source:
@@ -22,6 +23,19 @@ jobs:
             cd PythonAPI && python setup.py sdist
             python -m pip install --progress-bar off dist/*.tar.gz
           name: Install From Distribution
+  build-win:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
+          command: |
+            pip install -U virtualenv
+            python -m virtualenv env
+            .\env\Scripts\activate
+            pip install cython
+            cd PythonAPI
+            python setup.py sdist
+            pip install --progress-bar off dist/pycocotools-2.0.1.tar.gz
 
 workflows:
   main:
